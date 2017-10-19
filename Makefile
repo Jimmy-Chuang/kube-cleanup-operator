@@ -1,19 +1,18 @@
-OPERATOR_NAME  := kube-cleanup-operator
+OPERATOR_NAME  := operator
 VERSION := $(shell date +%Y%m%d%H%M)
-IMAGE := lwolf/$(OPERATOR_NAME)
+IMAGE := ogre0403/$(OPERATOR_NAME)
 
 .PHONY: install_deps build build-image
 
 install_deps:
-	dep ensure
+	glide install
 
 build:
-	rm -rf bin/%/$(OPERATOR_NAME)
+	rm -rf bin/*
 	go build -v -i -o bin/$(OPERATOR_NAME) ./cmd
 
-bin/%/$(OPERATOR_NAME):
-	rm -rf bin/%/$(OPERATOR_NAME)
-	GOOS=$* GOARCH=amd64 go build -v -i -o bin/$*/$(OPERATOR_NAME) ./cmd
+clean:
+	rm -rf bin/*
 
-build-image: bin/linux/$(OPERATOR_NAME)
-	docker build . -t $(IMAGE):$(VERSION)
+build-image:
+	docker build -t $(IMAGE):$(VERSION) .
